@@ -38,15 +38,16 @@ public class SetUpUI : MonoBehaviour
 	public string unitname;
 	private void Start()
 	{
+		UIMgr Ui = UIMgr.instance;
 		GameObject au = GameObject.Find("All_Unit");
 		if (au == null)
 		{
 			return;
 			Debug.Log("錯誤");
 		}
-		Player_Unit = GetChild(au, 1);
-		Enemy_Unit = GetChild(au, 2);
-		Ally_Unit = GetChild(au, 3);
+		Player_Unit = Ui.GetChild(au, 1);
+		Enemy_Unit = Ui.GetChild(au, 2);
+		Ally_Unit = Ui.GetChild(au, 3);
 
 		GameObject suu = GameObject.Find("SetAIUnitUI");
 		if (suu == null)
@@ -56,22 +57,22 @@ public class SetUpUI : MonoBehaviour
 		}
 		//dd = GameObject.Find("sauu_faction").GetComponent<TMP_Dropdown>();
 		//Unit = GameObject.Find("sauu_Dropdown").GetComponent<TMP_Dropdown>();
-		dd = GetChild(suu,16).GetComponent<TMP_Dropdown>();
-		name = GetChild(suu, 1, 1).GetComponent<TextMeshProUGUI>();
-		job = GetChild(suu, 2, 1).GetComponent<TextMeshProUGUI>();
-		hp = GetChild(suu, 3, 2).GetComponent<TextMeshProUGUI>();
-		Level = GetChild(suu, 4, 2).GetComponent<TMP_InputField>();
-		PAttack = GetChild(suu, 5, 2).GetComponent<TextMeshProUGUI>();
-		MAttack = GetChild(suu, 6, 2).GetComponent<TextMeshProUGUI>();
-		Agi = GetChild(suu, 7, 2).GetComponent<TextMeshProUGUI>();
-		PDef = GetChild(suu, 8, 2).GetComponent<TextMeshProUGUI>();
-		MDef = GetChild(suu, 9, 2).GetComponent<TextMeshProUGUI>();
-		Luk = GetChild(suu, 10, 2).GetComponent<TextMeshProUGUI>();
-		Lightning = GetChild(suu, 11, 2).GetComponent<TextMeshProUGUI>();
-		Ice = GetChild(suu, 12, 2).GetComponent<TextMeshProUGUI>();
-		Fire = GetChild(suu, 13, 2).GetComponent<TextMeshProUGUI>();
-		Wind = GetChild(suu, 14, 2).GetComponent<TextMeshProUGUI>();
-		Mov = GetChild(suu, 15, 1).GetComponent<TextMeshProUGUI>();
+		dd = Ui.GetChild(suu,16).GetComponent<TMP_Dropdown>();
+		name = Ui.GetChild(suu, 1, 1).GetComponent<TextMeshProUGUI>();
+		job = Ui.GetChild(suu, 2, 1).GetComponent<TextMeshProUGUI>();
+		hp = Ui.GetChild(suu, 3, 2).GetComponent<TextMeshProUGUI>();
+		Level = Ui.GetChild(suu, 4, 2).GetComponent<TMP_InputField>();
+		PAttack = Ui.GetChild(suu, 5, 2).GetComponent<TextMeshProUGUI>();
+		MAttack = Ui.GetChild(suu, 6, 2).GetComponent<TextMeshProUGUI>();
+		Agi = Ui.GetChild(suu, 7, 2).GetComponent<TextMeshProUGUI>();
+		PDef = Ui.GetChild(suu, 8, 2).GetComponent<TextMeshProUGUI>();
+		MDef = Ui.GetChild(suu, 9, 2).GetComponent<TextMeshProUGUI>();
+		Luk = Ui.GetChild(suu, 10, 2).GetComponent<TextMeshProUGUI>();
+		Lightning = Ui.GetChild(suu, 11, 2).GetComponent<TextMeshProUGUI>();
+		Ice = Ui.GetChild(suu, 12, 2).GetComponent<TextMeshProUGUI>();
+		Fire = Ui.GetChild(suu, 13, 2).GetComponent<TextMeshProUGUI>();
+		Wind = Ui.GetChild(suu, 14, 2).GetComponent<TextMeshProUGUI>();
+		Mov = Ui.GetChild(suu, 15, 1).GetComponent<TextMeshProUGUI>();
 		Level.onEndEdit.AddListener(OnLevelEndEdit);
 		//HandleUnitValueChanged(Unit.value); 
 	}
@@ -236,14 +237,6 @@ public class SetUpUI : MonoBehaviour
 
 		return combinedList;
 	}
-	GameObject GetChild(GameObject father, int floor_1)
-	{
-		return father.transform.GetChild(floor_1 - 1).gameObject;
-	}
-
-	GameObject GetChild(GameObject father, int floor_1, int floor_2)
-	{
-		return father.transform.GetChild(floor_1 - 1).transform.GetChild(floor_2 - 1).gameObject;
-	}
+	
 }
 
