@@ -27,6 +27,7 @@ public class generator : MonoBehaviour
 	public Material bule;
 	public Material red;
 	// Start is called before the first frame update
+	public List<AStarNode> Range;
 	void Start()
 	{
 		_width = GameObject.Find("widthValue").GetComponent<InputField>();
@@ -35,7 +36,7 @@ public class generator : MonoBehaviour
 	}
 
 	// Update is called once per frame
-	public void generate_node()
+	public void generate_node_edit()
 	{
 		if (nodeGrp.transform.childCount != 0)
 		{
@@ -58,18 +59,10 @@ public class generator : MonoBehaviour
 		}
 
 	}
-	public void generate_node(AStarNode[,] nodemap)
+	public void generate_node_game()
 	{
-		if (nodeGrp.transform.childCount != 0)
-		{
-			for (int i = nodeGrp.transform.childCount - 1; i >= 0; i--)
-			{
-				Destroy(nodeGrp.transform.GetChild(i).gameObject);
-			}
-		}
-
-		
-
+		AStarNode[,] nodemap = ASTarMgr.instance.nodes;
+		DestroyNode();
 		for (int i = 0; i < nodemap.GetLength(0); i++)
 		{
 			for (int j = 0; j < nodemap.GetLength(1); j++)
@@ -94,5 +87,43 @@ public class generator : MonoBehaviour
 		}
 
 	}
+
+	public void showRange(Unit_map_Date Unitdate)
+	{	
+		
+		AStarNode[,] nodemap = ASTarMgr.instance.nodes;
+		DestroyNode();
+		//移動力
+		int mov = Unitdate.date.Mov;
+		//print(mov);
+		//玩家位置
+		Vector2 Loc = new Vector2(Unitdate.loc.x/10, Unitdate.loc.z/10);
+		//找出可以移動得格子
+		Range = ASTarMgr.instance.FindMoveRange(Loc, nodemap,mov);
+		//print(Range.Count);
+		foreach (var node in Range)
+		{
+			GameObject cube = Instantiate(PNode, new Vector3((begiX + node.x) * offsetX, (node.z - 1) * 4, (begiY + node.y) * offsetY), PNode.transform.rotation);
+			cube.name = "(" + node.x + "," + node.z + ")";
+			cube.transform.parent = nodeGrp.transform;
+			if (node.type == Node_Type.walk)
+			{
+
+				cube.GetComponent<MeshRenderer>().material = bule;
+			}
+		}
+	}
+	void DestroyNode()
+	{
+		if (nodeGrp.transform.childCount != 0)
+		{
+			for (int i = nodeGrp.transform.childCount - 1; i >= 0; i--)
+			{
+				Destroy(nodeGrp.transform.GetChild(i).gameObject);
+			}
+		}
+	}
+
+	
 
 }
