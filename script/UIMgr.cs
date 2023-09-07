@@ -18,7 +18,7 @@ public class UIMgr : MonoBehaviour
 	public GameObject Unit_template;
 	public GameObject Unit_list_temp;
 	/// <summary>
-	/// 1編輯模式 2戰鬥模式 3家園模式
+	/// 0編輯模式 1戰鬥模式 2家園模式
 	/// </summary>
 	public bool[] mode = new bool[3];
 	// Start is called before the first frame update
@@ -169,7 +169,7 @@ public class UIMgr : MonoBehaviour
 				}
 			}
 
-			generator.instance.generate_node(ASTarMgr.instance.nodes);
+			generator.instance.generate_node_game();
 			//Debug.Log("Nodes loaded from file: " + filePath);
 		}
 		else
@@ -230,7 +230,7 @@ public class UIMgr : MonoBehaviour
 			}
 		}
 
-		generator.instance.generate_node(ASTarMgr.instance.nodes);
+		generator.instance.generate_node_game();
 		//Debug.Log("Nodes loaded from file.");
 	}
 
@@ -484,7 +484,7 @@ public class UIMgr : MonoBehaviour
 				int wind = int.Parse(dataValues[18]);
 
 				// 根據陣營標籤將資料加入對應的陣營列表
-				Unit_Loc unitLoc = new Unit_Loc(loc);
+				Vector3 unitLoc = loc;
 				Unit_Data unitData = new Unit_Data(name, level, job, hp, pAttack, mAttack, pDef, mDef, agi, mov, luk, lightning, ice, fire, wind);
 				Unit_map_Date unitMapData = new Unit_map_Date(unitLoc, unitData);
 
@@ -549,7 +549,7 @@ public class UIMgr : MonoBehaviour
 			int wind = int.Parse(dataValues[18]);
 
 			// 根據陣營標籤將資料加入對應的陣營列表
-			Unit_Loc unitLoc = new Unit_Loc(loc);
+			Vector3 unitLoc = loc;
 			Unit_Data unitData = new Unit_Data(name, level, job, hp, pAttack, mAttack, pDef, mDef, agi, mov, luk, lightning, ice, fire, wind);
 			Unit_map_Date unitMapData = new Unit_map_Date(unitLoc, unitData);
 
@@ -567,7 +567,7 @@ public class UIMgr : MonoBehaviour
 			}
 		}
 
-		Debug.Log("Map unit data loaded from file.");
+		//Debug.Log("Map unit data loaded from file.");
 		SetTempUnit(1);
 	}
 	public void item_list_update()
@@ -710,18 +710,18 @@ public class UIMgr : MonoBehaviour
 			case 1:
 				ut.transform.parent = suu.Enemy_Unit.transform;
 				print(mum.Enemy_Unit);
-				mum.Enemy_Unit.Add(new Unit_map_Date(new Unit_Loc(cursorLoc), new Unit_Data(name, Level, job, hp, PAttack,
+				mum.Enemy_Unit.Add(new Unit_map_Date(cursorLoc, new Unit_Data(name, Level, job, hp, PAttack,
 					MAttack, PDef, MDef, Agi, Mov, Luk, Lightning, Ice, Fire, Wind)));
 				break;
 			case 2:
 				ut.transform.parent = suu.Ally_Unit.transform;
-				mum.Ally_Unit.Add(new Unit_map_Date(new Unit_Loc(cursorLoc), new Unit_Data(name, Level, job, hp, PAttack,
+				mum.Ally_Unit.Add(new Unit_map_Date(cursorLoc, new Unit_Data(name, Level, job, hp, PAttack,
 					MAttack, PDef, MDef, Agi, Mov, Luk, Lightning, Ice, Fire, Wind)));
 				break;
 			case 3:
 				ut.transform.parent = suu.Player_Unit.transform;
 				
-				mum.Player_Unit_Loc.Add(new Unit_map_Date(new Unit_Loc(cursorLoc), new Unit_Data(name, Level, job, hp, PAttack,
+				mum.Player_Unit_Loc.Add(new Unit_map_Date(cursorLoc, new Unit_Data(name, Level, job, hp, PAttack,
 					MAttack, PDef, MDef, Agi, Mov, Luk, Lightning, Ice, Fire, Wind)));
 				break;
 		}
@@ -792,9 +792,9 @@ public class UIMgr : MonoBehaviour
 		foreach (var list in eu)
 		{
 			//座標
-			int x = list.loc.x;
-			int y = list.loc.y;
-			int z = list.loc.z;
+			float x = list.loc.x;
+			float y = list.loc.y;
+			float z = list.loc.z;
 			//需要的資料
 			string name = list.date.name;
 			Job_Type job = list.date.job;
@@ -843,9 +843,9 @@ public class UIMgr : MonoBehaviour
 		foreach (var list in au)
 		{
 			//座標
-			int x = list.loc.x;
-			int y = list.loc.y;
-			int z = list.loc.z;
+			float x = list.loc.x;
+			float y = list.loc.y;
+			float z = list.loc.z;
 			//需要的資料
 			string name = list.date.name;
 			Job_Type job = list.date.job;
@@ -893,9 +893,9 @@ public class UIMgr : MonoBehaviour
 		foreach (var list in pu)
 		{
 			//座標
-			int x = list.loc.x;
-			int y = list.loc.y;
-			int z = list.loc.z;
+			float x = list.loc.x;
+			float y = list.loc.y;
+			float z = list.loc.z;
 			//需要的資料
 			string name = list.date.name;
 			Job_Type job = list.date.job;
@@ -907,6 +907,7 @@ public class UIMgr : MonoBehaviour
 			SpriteRenderer jobimg = ut.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>();
 			ImgMgr im = ImgMgr.instance;
 			ut.transform.parent = suu.Enemy_Unit.transform;
+
 			jobbg.color = Color.white;
 			switch (job)
 			{
@@ -932,9 +933,9 @@ public class UIMgr : MonoBehaviour
 		foreach (var list in eu)
 		{
 			//座標
-			int x = list.loc.x;
-			int y = list.loc.y;
-			int z = list.loc.z;
+			float x = list.loc.x;
+			float y = list.loc.y;
+			float z = list.loc.z;
 			//需要的資料
 			string name = list.date.name;
 			Job_Type job = list.date.job;
@@ -983,9 +984,9 @@ public class UIMgr : MonoBehaviour
 		foreach (var list in au)
 		{
 			//座標
-			int x = list.loc.x;
-			int y = list.loc.y;
-			int z = list.loc.z;
+			float x = list.loc.x;
+			float y = list.loc.y;
+			float z = list.loc.z;
 			//需要的資料
 			string name = list.date.name;
 			Job_Type job = list.date.job;
@@ -1038,13 +1039,19 @@ public class UIMgr : MonoBehaviour
 			{
 				
 
-				Unit_Data ud= Map_Unit_Mgr.instance.Player_Unit[num];
+				Unit_map_Date umd= Map_Unit_Mgr.instance.Player_Unit[num];
+				Unit_Data ud = umd.date;
 				num++;
 				//座標
-				int x = list.loc.x;
-				int y = list.loc.y;
-				int z = list.loc.z;
+				float x = list.loc.x;
+				float y = list.loc.y;
+				float z = list.loc.z;
+				umd.loc = new Vector3(x, y, z);
 				//需要的資料
+				umd.CanMoveCont = 1;
+				umd.MoveStep= 0;
+				umd.MoveCont = 0;
+				//print(umd.CanMoveCont);
 				string name = ud.name;
 				Job_Type job = ud.job;
 				//在座標上生成單位 模板
@@ -1092,11 +1099,11 @@ public class UIMgr : MonoBehaviour
 		
 
 	}
-	GameObject GetChild(GameObject father, int floor_1)
+	public GameObject GetChild(GameObject father, int floor_1)
 	{
 		return father.transform.GetChild(floor_1 - 1).gameObject;
 	}
-	GameObject GetChild(GameObject father, int floor_1, int floor_2)
+	public GameObject GetChild(GameObject father, int floor_1, int floor_2)
 	{
 		return father.transform.GetChild(floor_1 - 1).transform.GetChild(floor_2 - 1).gameObject;
 	}
