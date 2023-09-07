@@ -94,7 +94,7 @@ public class cursor_move : MonoBehaviour
 		isMoving = true;
 
 		AStarNode node = ASTarMgr.instance.nodes[(int)(targetLoc.x / 10), (int)(targetLoc.z / 10)];
-		GetNodeInfo(node);
+
 		Vector3 hight = new Vector3(0, sethight(node), 0);
 		float startTime = Time.time;
 		Vector3 startPosition = transform.position;
@@ -104,14 +104,14 @@ public class cursor_move : MonoBehaviour
 		{
 			if (Vector2.Distance(new Vector2(startPosition.x,startPosition.z),new Vector2 (transform.position.x,transform.position.z)) > 5f)
 			{
-				Linghtbox.transform.position = targetLoc+new Vector3(0,0.3f)+hight;
+				Linghtbox.transform.position = targetLoc + new Vector3(0,0.3f)+ hight;
 			}
 			float elapsedTime = Time.time - startTime;
 			float t = Mathf.Clamp01(elapsedTime / (1 / moveSpeed));
 			transform.position = Vector3.Lerp(startPosition, targetPosition, t);
 			yield return null;
 		}
-		
+		GetNodeInfo(node);
 		isMoving = false;
 	}
 	Vector3 direction_correction(int direction)
@@ -250,12 +250,65 @@ public class cursor_move : MonoBehaviour
 	}
 	public void GetNodeInfo(AStarNode node)
 	{
-		drawing_tool dt = drawing_tool.instance;
-		//Debug.Log("(" + node.x + "," + node.y + ")");
-		dt.LocText.text = "(" + node.x + "," + node.y + ")";
-		dt.TypeText.text = node.type.ToString();
-		dt.hightText.text = node.z.ToString();
-		
+		UIMgr ui = UIMgr.instance;
+		if (ui.mode[0]==true)
+		{
+			drawing_tool dt = drawing_tool.instance;
+			dt.LocText.text = "(" + node.x + "," + node.y + ")";
+			dt.TypeText.text = node.type.ToString();
+			dt.hightText.text = node.z.ToString();
+		}
+		if (ui.mode[1] == true)
+		{
+			//找到我方單位
+			GameObject Ptarget =  findUnitOnCursor(GameObject.Find("Player_Unit"));
+			GameObject Atarget =  findUnitOnCursor(GameObject.Find("Ally_Unit"));
+			GameObject Etarget =  findUnitOnCursor(GameObject.Find("Enemy_Unit"));
+			if (Ptarget != null)
+			{
+				battleUIMgr bui = battleUIMgr.instance;
+				if (battleUIMgr.instance.P_behavior !=behaviorMod.OnMoveing_first && battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_second)
+				{
+					bui.sortBattleUi(FindUnitDate(0));
+				}
+			}
+			if (Atarget != null)
+			{
+				Debug.Log("找到友方");
+			}
+			if (Etarget != null)
+			{
+				Debug.Log("找到敵方");
+			}
+			if (Ptarget == null&& Atarget == null&& Etarget == null)
+			{
+				battleUIMgr bui = battleUIMgr.instance;
+				if (battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_first && battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_second)
+				{
+					bui.hideAllUi();
+				}
+			}
+		}
+	}
+	/// <summary>
+	/// 0我方 1敵方 2友方
+	/// </summary>
+	public Unit_map_Date FindUnitDate(int mode)
+	{
+		Map_Unit_Mgr mum = Map_Unit_Mgr.instance;
+		if (mode == 0)
+		{
+			foreach (Unit_map_Date unitDate in mum.Player_Unit)
+			{	
+				Vector3 Loc = new Vector3(unitDate.loc.x, unitDate.loc.y, unitDate.loc.z);
+				// 如果單位的位置與指定位置相同，則返回這個單位的資料
+				if (Loc == transform.position)
+				{
+					return unitDate;
+				}
+			}
+		}
+		return null;
 	}
 	public int sethight(AStarNode node)
 	{
@@ -299,7 +352,6 @@ public class cursor_move : MonoBehaviour
 		}
 		return null;
 	}
-
 	public Vector3 GetCursorLoc()
 	{
 		return transform.position;
