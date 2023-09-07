@@ -139,7 +139,7 @@ public class drawing_tool : MonoBehaviour
         target = GameObject.Find("(" + x + "," + z + ")");
         y = Int32.Parse(floorstext.text) - 1;
         AStarNode node = am.nodes[(int)x, (int)z];
-        target.transform.position = new Vector3(target.transform.position.x,y*4, target.transform.position.z);
+        target.transform.position = new Vector3(target.transform.position.x, y * 4, target.transform.position.z);
         switch (mode)
 		{
             case 1:
