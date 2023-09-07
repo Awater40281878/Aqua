@@ -21,7 +21,8 @@ public class Episode_Mgr : MonoBehaviour
     public List<Episode> All_Episode;
     public void StartBattle()
     {
-        GameObject lui = GetChild(GameObject.Find("battleUI"), 1);
+        UIMgr Ui = UIMgr.instance;
+        GameObject lui = Ui.GetChild(GameObject.Find("battleUI"), 1);
         lui.SetActive(false);
         Battle();
 
@@ -43,13 +44,14 @@ public class Episode_Mgr : MonoBehaviour
             DestroyAllChild(item);
 
         }
-        GameObject ld = GetChild(GameObject.Find("battleUI"), 1, 2);
+        UIMgr Ui = UIMgr.instance;
+        GameObject ld = Ui.GetChild(GameObject.Find("battleUI"), 1, 2);
         TMP_Dropdown td = ld.GetComponent<TMP_Dropdown>();
         int level = td.value;
         Episode thisEp = All_Episode[level];
         //讀取 地圖 格子 單位
         UIMgr um = UIMgr.instance;
-        GameObject thismap =  Instantiate(thisEp.map_obj, Vector3.zero, Quaternion.identity);
+		GameObject thismap = Instantiate(thisEp.map_obj, Vector3.zero, Quaternion.identity);
         thismap.transform.parent = map.transform;
         thismap.transform.localPosition = Vector3.zero;
         thismap.transform.localRotation = Quaternion.identity;
@@ -71,13 +73,5 @@ public class Episode_Mgr : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-    }
-    GameObject GetChild(GameObject father, int floor_1)
-    {
-        return father.transform.GetChild(floor_1 - 1).gameObject;
-    }
-    GameObject GetChild(GameObject father, int floor_1, int floor_2)
-    {
-        return father.transform.GetChild(floor_1 - 1).transform.GetChild(floor_2 - 1).gameObject;
     }
 }
