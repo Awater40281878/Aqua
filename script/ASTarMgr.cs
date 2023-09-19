@@ -1,6 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using static UnityEditor.Progress;
+
 public class ASTarMgr : MonoBehaviour
 {
 	public static ASTarMgr instance;
@@ -100,7 +106,7 @@ public class ASTarMgr : MonoBehaviour
 
 
 
-			//如果凱起列表為空都還沒找到路徑，就是死路
+			//如果開起列表為空都還沒找到路徑，就是死路
 			if (openList.Count == 0)
 			{
 				Debug.Log("死路");
@@ -131,6 +137,56 @@ public class ASTarMgr : MonoBehaviour
 		}
 	}
 
+	public List<AStarNode> FindPath_AI_01(Vector2 startPos, Vector2 endPos)
+	{
+		//遠距離單位演算法，
+		//終點取得方式 會先在目標周圍 找到所有可能的終點
+		//所以要藉由目標的位置，與AI類型來決定尋找AI的方式
+		//第一類型 為 十字 類型
+		List<AStarNode> Path = new List<AStarNode>();
+		List<AStarNode> endlist = new List<AStarNode>();
+		List<AStarNode> FailPath = new List<AStarNode>();
+		Path = FindPath(startPos, endPos);
+		//print(Path.Count);
+		if (Path.Count == 0)
+		{
+			print("再次判斷");
+			//被判定為死路的終點
+			FailPath.Add(nodes[(int)endPos.x, (int)endPos.y]);
+			//所有路徑
+			List<List<AStarNode>> AllPath = new List<List<AStarNode>>();
+			//當為死路時，需要讓AI靠近目標
+			while (true)
+			{
+				//得到新的endlist
+				foreach (var node in FailPath)
+				{
+					endlist = FindNearlyEnd(node, FailPath);
+				}
+				foreach (var end in endlist)
+				{
+					//找到路徑並存到 比較用的列表
+					Vector2 endvec = new Vector2(end.x, end.y);
+					List<AStarNode> Temppath =  FindPath(startPos, endvec);
+					if (Temppath.Count!= 0)
+					{
+						AllPath.Add(Temppath);
+					}
+					else
+					{
+						FailPath.Add(end);
+					}
+				}
+				if (AllPath.Count != 0)
+				{
+					AllPath.Sort((list1, list2) => list1.Count.CompareTo(list2.Count));
+					return AllPath[0];
+				}
+			}
+		}
+		return Path;
+
+	}
 	public List<AStarNode> FindMoveRange(Vector2 startPos, AStarNode[,] _nodes, int Mov)
 	{
 		//1.是否在範圍內
@@ -193,25 +249,50 @@ public class ASTarMgr : MonoBehaviour
 			//找的這個點又變成新的起點，進行下一次尋路計算
 			//start = openList[0];
 			List<AStarNode> newOpenList = new List<AStarNode>(cloesList);
+
 			//openList.RemoveAt(0);
 			openList.RemoveAll(item => cloesList.Contains(item));
 			if (mov == 0)
 			{
-				//找完了
-				//List<AStarNode> path = new List<AStarNode>();
-				//path.Add(end);
-				//while (end.father != null)
-				//{
-				//	path.Add(end.father);
-				//	end = end.father;
-				//}
-				//反轉
-				//path.Reverse();
+				List<Unit_map_Date> pu = Map_Unit_Mgr.instance.Player_Unit;
+				List<Unit_map_Date> au = Map_Unit_Mgr.instance.Ally_Unit;
+				List<Vector2> AllyLoc = new List<Vector2>();
+				List<Vector2> RemoveLoc = new List<Vector2>();
+				foreach (Unit_map_Date u in pu)
+				{
+					AllyLoc.Add(new Vector2(u.loc.x/10, u.loc.z/10));
+				}
+				foreach (var u in au)
+				{
+					AllyLoc.Add(new Vector2(u.loc.x/10, u.loc.z/10));
+				}
+				foreach (Vector2 al in AllyLoc)
+				{
+                    foreach (var op in cloesList)
+                    {
+						//print(op.x +"_" + al.x+"   "+ op.z + "_" + al.y);
+						if (op.x==al.x &&op.z == al.y)
+						{
+							RemoveLoc.Add(new Vector2(op.x, op.z));
+						}
+                    }
+				}
+				
+				if (RemoveLoc.Count!=0)
+				{
+					cloesList.RemoveAll(node => RemoveLoc.Any(vec => vec.x == node.x && vec.y == node.y));
+					
+				}
 				return cloesList;
 			}
 			
 		}
 	}
+
+	//public List<ASTarMgr> FindSkillRange()
+	//{
+
+	//}
 	//排序函數
 	private int SortOpenList(AStarNode a, AStarNode b)
 	{
@@ -222,8 +303,9 @@ public class ASTarMgr : MonoBehaviour
 		else
 			return -1;
 	}
-	public void FindNearlyToOpenList(int x, int y, float g, AStarNode father, AStarNode end, AStarNode[,] _nodes)
+	void FindNearlyToOpenList(int x, int y, float g, AStarNode father, AStarNode end, AStarNode[,] _nodes)
 	{
+		
 		//判斷是否是 邊界 阻擋 在開啟 關閉 列表中 都不是才放入開啟列表
 		if (x < 0 || x >= mapW || y < 0 || y >= mapH)
 		{
@@ -231,11 +313,50 @@ public class ASTarMgr : MonoBehaviour
 			return;
 
 		}
+		////print(1);
 		AStarNode node = _nodes[x, y];
-
+		//switch (battleRound.instance.Phase)
+		//{
+		//	case 1:
+		//		List<Unit_map_Date> eu = Map_Unit_Mgr.instance.Enemy_Unit;
+		//		List<Vector2> EnemyLoc = new List<Vector2>();
+		//		foreach (Unit_map_Date u in eu)
+		//		{
+		//			EnemyLoc.Add(new Vector2(u.loc.x / 10, u.loc.z / 10));
+		//		}
+		//		foreach (Vector2 el in EnemyLoc)
+		//		{
+		//			if (x == el.x && y == el.y)
+		//			{
+		//				Debug.Log("1");
+		//				return;
+		//			}
+		//		}
+		//		break;
+		//	case 2:
+		//		List<Unit_map_Date> pu = Map_Unit_Mgr.instance.Player_Unit;
+		//		List<Vector2> PlayerLoc = new List<Vector2>();
+		//		foreach (Unit_map_Date p in pu)
+		//		{
+					
+		//			PlayerLoc.Add(new Vector2(p.loc.x / 10, p.loc.z / 10));
+		//		}
+		//		foreach (Vector2 pl in PlayerLoc)
+		//		{
+		//			if (x == pl.x && y == pl.y)
+		//			{
+		//				print(1);
+		//				return;
+		//			}
+		//		}
+		//		break;
+		//	default:
+		//		break;
+		//}
+		
 		if (node == null || node.type == Node_Type.Stop || cloesList.Contains(node) || openList.Contains(node))
 		{
-
+			//Debug.Log("3");
 			return;
 		}
 		node.father = father;
@@ -246,9 +367,9 @@ public class ASTarMgr : MonoBehaviour
 
 		node.f = node.g + node.h;
 		openList.Add(node);
-
+		
 	}
-	public void FindNearlyToOpenList(int x, int y, AStarNode father, AStarNode[,] _nodes)
+	void FindNearlyToOpenList(int x, int y, AStarNode father, AStarNode[,] _nodes)
 	{
 		//判斷是否是 邊界 阻擋 在開啟 關閉 列表中 都不是才放入開啟列表
 		if (x < 0 || x >= mapW || y < 0 || y >= mapH)
@@ -258,7 +379,19 @@ public class ASTarMgr : MonoBehaviour
 
 		}
 		AStarNode node = _nodes[x, y];
-
+		List<Unit_map_Date> eu = Map_Unit_Mgr.instance.Enemy_Unit;
+		List<Vector2> EnemyLoc = new List<Vector2>();
+		foreach (Unit_map_Date u in eu)
+		{
+			EnemyLoc.Add(new Vector2(u.loc.x/10, u.loc.z/10));
+		}
+		foreach (Vector2 el in EnemyLoc)
+		{
+			if (x==el.x && y == el.y)
+			{
+				return;
+			}
+		}
 		if (node == null || node.type == Node_Type.Stop || cloesList.Contains(node) || openList.Contains(node))
 		{
 
@@ -272,6 +405,72 @@ public class ASTarMgr : MonoBehaviour
 
 		//node.f = node.g + node.h;
 		openList.Add(node);
+
+	}
+
+	AStarNode FindNearlyToOpenList(int x, int y, AStarNode father)
+	{
+		//判斷是否是 邊界 阻擋 在開啟 關閉 列表中 都不是才放入開啟列表
+		if (x < 0 || x >= mapW || y < 0 || y >= mapH)
+		{
+			//Debug.Log(x+"_"+y);
+			return null; 
+
+		}
+		AStarNode node = nodes[x, y];
+		List<Unit_map_Date> eu = Map_Unit_Mgr.instance.Enemy_Unit;
+		List<Vector2> EnemyLoc = new List<Vector2>();
+		foreach (Unit_map_Date u in eu)
+		{
+			EnemyLoc.Add(new Vector2(u.loc.x / 10, u.loc.z / 10));
+		}
+		foreach (Vector2 el in EnemyLoc)
+		{
+			if (x == el.x && y == el.y)
+			{
+				return null ;
+			}
+		}
+		if (node == null || node.type == Node_Type.Stop || cloesList.Contains(node) || openList.Contains(node))
+		{
+
+			return null;
+		}
+		node.father = father;
+		//g 公式 我離起點的距離   =   父對象離起點的距離 + 我離父對象的距離
+		//node.g = father.g + g;
+
+		//node.h = Mathf.Abs(end.x - node.x) + (Mathf.Abs(end.y - node.y));
+
+		//node.f = node.g + node.h;
+		return node;
+		//openList.Add(node);
+
+	}
+	private List<AStarNode> FindNearlyEnd(AStarNode _end, List<AStarNode> _FailPath)
+	{
+		List<AStarNode> endlist = new List<AStarNode>();
+		AStarNode nodeToAdd;
+		Vector2Int end = new Vector2Int(_end.x, _end.y);
+
+		nodeToAdd = FindNearlyToOpenList(end.x, end.y - 1, _end);
+		if (!_FailPath.Contains(nodeToAdd))
+			endlist.Add(nodeToAdd);
+
+		nodeToAdd = FindNearlyToOpenList(end.x - 1, end.y, _end);
+		if (!_FailPath.Contains(nodeToAdd))
+			endlist.Add(nodeToAdd);
+
+		nodeToAdd = FindNearlyToOpenList(end.x + 1, end.y, _end);
+		if (!_FailPath.Contains(nodeToAdd))
+			endlist.Add(nodeToAdd);
+
+		nodeToAdd = FindNearlyToOpenList(end.x, end.y + 1, _end);
+		if (!_FailPath.Contains(nodeToAdd))
+			endlist.Add(nodeToAdd);
+		return endlist;
+
+
 
 	}
 }
