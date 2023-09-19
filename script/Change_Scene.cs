@@ -12,18 +12,18 @@ public class Change_Scene : MonoBehaviour
 		}
 	}
 	// Start is called before the first frame update
-	GameObject generatorUI;
-	GameObject CreateUnitUI;
-	GameObject drawUI;	
-	GameObject SetPlayerUnitUI;
-	GameObject ScrollViewItem;
+	public GameObject generatorUI;
+	public GameObject CreateUnitUI;
+	public GameObject drawUI;	
+	public GameObject SetPlayerUnitUI;
+	public GameObject ScrollViewItem;
 	//center UI
-	Vector2 ChideLoc = new Vector2(-400, 18.25f);
-	Vector2 CshowLoc = new Vector2(0, 18.25f);
+	Vector2 ChideLoc = new Vector2(-218, 620f);
+	Vector2 CshowLoc = new Vector2(204, 620f);
 	//botton UI
-	Vector2 BhideLoc = new Vector2(-3400f, -181.76f);
-	Vector2 BshowLoc = new Vector2(-1170f, -181.76f);
-	/// <summary>
+	Vector2 BhideLoc = new Vector2(-2000f, 0);
+	Vector2 BshowLoc = new Vector2(0, 0);
+	///<summary>
 	/// 1.generator 2.draw 3.Unit
 	/// </summary>
 	public bool[] mode = new bool[3];
@@ -107,7 +107,6 @@ public class Change_Scene : MonoBehaviour
 		GetRect(CreateUnitUI).anchoredPosition = BhideLoc;
 		GetRect(SetPlayerUnitUI).anchoredPosition = BhideLoc;
 	}
-
 	public void show_Create()
 	{
 		GetRect(SetPlayerUnitUI).anchoredPosition = BhideLoc;
@@ -125,8 +124,6 @@ public class Change_Scene : MonoBehaviour
 		GetRect(drawUI).anchoredPosition = BhideLoc;
 		GetRect(generatorUI).anchoredPosition = BhideLoc;
 		GetRect(SetPlayerUnitUI).anchoredPosition = BshowLoc;
-		//Unit_menu.instance.UpdateDropdownOptions();
-		//SetUpUI.instance.HandleUnitValueChanged();
 	}
 	public void show_SetAIUnitList()
 	{
