@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using Unity.VisualScripting;
+
 public class cursor_move : MonoBehaviour
 {
 	public static cursor_move instance;
@@ -19,20 +21,20 @@ public class cursor_move : MonoBehaviour
 	private bool isMoving;
 	private GameObject UnitGrp;
 	GameObject center_camera;
-	GameObject Linghtbox;
-	public Vector3 targetLoc = Vector3.one*-1;
+	public GameObject Linghtbox;
+	public Vector3 targetLoc = Vector3.one * -1;
 	private void Start()
 	{
 		//Time.timeScale = 0.1f;
-		  center_camera = GameObject.Find("center_camera");
+		center_camera = GameObject.Find("center_camera");
 		UnitGrp = GameObject.Find("All_Unit");
 		Linghtbox = GameObject.Find("lightbox");
-		
+
 
 	}
 	private void Update()
 	{
-		if (isMoving==false)
+		if (isMoving == false)
 		{
 			if (Input.GetKey(KeyCode.W))
 			{
@@ -51,7 +53,7 @@ public class cursor_move : MonoBehaviour
 				StartMove(direction_correction(6));
 			}
 		}
-		
+
 	}
 
 	private void StartMove(Vector3 direction)
@@ -100,11 +102,11 @@ public class cursor_move : MonoBehaviour
 		Vector3 startPosition = transform.position;
 		Vector3 targetPosition = targetLoc + hight;
 
-		while (transform.position!= targetPosition)
+		while (transform.position != targetPosition)
 		{
-			if (Vector2.Distance(new Vector2(startPosition.x,startPosition.z),new Vector2 (transform.position.x,transform.position.z)) > 5f)
+			if (Vector2.Distance(new Vector2(startPosition.x, startPosition.z), new Vector2(transform.position.x, transform.position.z)) > 5f)
 			{
-				Linghtbox.transform.position = targetLoc + new Vector3(0,0.3f)+ hight;
+				Linghtbox.transform.position = targetLoc + new Vector3(0, 0.3f) + hight;
 			}
 			float elapsedTime = Time.time - startTime;
 			float t = Mathf.Clamp01(elapsedTime / (1 / moveSpeed));
@@ -112,6 +114,7 @@ public class cursor_move : MonoBehaviour
 			yield return null;
 		}
 		GetNodeInfo(node);
+		
 		isMoving = false;
 	}
 	Vector3 direction_correction(int direction)
@@ -250,8 +253,10 @@ public class cursor_move : MonoBehaviour
 	}
 	public void GetNodeInfo(AStarNode node)
 	{
+
 		UIMgr ui = UIMgr.instance;
-		if (ui.mode[0]==true)
+		//print(ui.mode[0]);
+		if (ui.mode[0] == true)
 		{
 			drawing_tool dt = drawing_tool.instance;
 			dt.LocText.text = "(" + node.x + "," + node.y + ")";
@@ -261,15 +266,18 @@ public class cursor_move : MonoBehaviour
 		if (ui.mode[1] == true)
 		{
 			//找到我方單位
-			GameObject Ptarget =  findUnitOnCursor(GameObject.Find("Player_Unit"));
-			GameObject Atarget =  findUnitOnCursor(GameObject.Find("Ally_Unit"));
-			GameObject Etarget =  findUnitOnCursor(GameObject.Find("Enemy_Unit"));
+			//print(0);
+			GameObject Ptarget = findUnitOnCursor(GameObject.Find("Player_Unit"));
+			GameObject Atarget = findUnitOnCursor(GameObject.Find("Ally_Unit"));
+			GameObject Etarget = findUnitOnCursor(GameObject.Find("Enemy_Unit"));
 			if (Ptarget != null)
 			{
+				//print(1);
 				battleUIMgr bui = battleUIMgr.instance;
-				if (battleUIMgr.instance.P_behavior !=behaviorMod.OnMoveing_first && battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_second)
+				if (battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_first && battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_second)
 				{
 					bui.sortBattleUi(FindUnitDate(0));
+					//print(2);
 				}
 			}
 			if (Atarget != null)
@@ -280,7 +288,7 @@ public class cursor_move : MonoBehaviour
 			{
 				Debug.Log("找到敵方");
 			}
-			if (Ptarget == null&& Atarget == null&& Etarget == null)
+			if (Ptarget == null && Atarget == null && Etarget == null)
 			{
 				battleUIMgr bui = battleUIMgr.instance;
 				if (battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_first && battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_second)
@@ -299,7 +307,7 @@ public class cursor_move : MonoBehaviour
 		if (mode == 0)
 		{
 			foreach (Unit_map_Date unitDate in mum.Player_Unit)
-			{	
+			{
 				Vector3 Loc = new Vector3(unitDate.loc.x, unitDate.loc.y, unitDate.loc.z);
 				// 如果單位的位置與指定位置相同，則返回這個單位的資料
 				if (Loc == transform.position)
@@ -308,12 +316,13 @@ public class cursor_move : MonoBehaviour
 				}
 			}
 		}
+		print("null");
 		return null;
 	}
 	public int sethight(AStarNode node)
 	{
 		//bool haveUnit = false;
-		int y = node.z-1;
+		int y = node.z - 1;
 		//Debug.Log("高度="+ node.z);
 		return (y * 4);
 		//float father_y = 2.75f;
@@ -345,8 +354,10 @@ public class cursor_move : MonoBehaviour
 	{
 		foreach (Transform child in fatherObj.transform)
 		{
+			//print(child.position+"_"+ transform.position);
 			if (child.position.x == transform.position.x && child.position.z == transform.position.z)
 			{
+				//print(child.gameObject.name);
 				return child.gameObject;
 			}
 		}
@@ -355,6 +366,12 @@ public class cursor_move : MonoBehaviour
 	public Vector3 GetCursorLoc()
 	{
 		return transform.position;
+	}
+
+	public void SetCusorLoc(Vector3 Loc)
+	{
+		gameObject.transform.position = Loc;
+		Linghtbox.transform.position = Loc;	
 	}
 
 }
