@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
+using System;
+using UnityEngine;
+[Serializable]
 public class Unit_Data
 {
     public string name;
@@ -19,13 +19,13 @@ public class Unit_Data
     public int Ice;
     public int Fire;
     public int Wind;
+    public int order;
 
 
 
 
-
-    // 建構方法 
-    public Unit_Data(string _name, int _Level, Job_Type _job, int _Hp, int _PAttack,
+	// 建構方法 
+	public Unit_Data(string _name, int _Level, Job_Type _job, int _Hp, int _PAttack,
         int _MAttack, int _PDef, int _MDef, int _Agi, int _Mov, int _Luk,
         int _Lightning, int _Ice, int _Fire,int _Wind)
     {   
