@@ -15,20 +15,20 @@ public class SetUpUI : MonoBehaviour
 		}
 	}
 	public TMP_Dropdown Unit;
-	public TextMeshProUGUI name;
-	public TextMeshProUGUI job;
-	public TextMeshProUGUI hp;
-	public TextMeshProUGUI PAttack;
-	public TextMeshProUGUI MAttack;
-	public TextMeshProUGUI PDef;
-	public TextMeshProUGUI MDef;
-	public TextMeshProUGUI Agi;
-	public TextMeshProUGUI Mov;
-	public TextMeshProUGUI Luk;
-	public TextMeshProUGUI Lightning;
-	public TextMeshProUGUI Ice;
-	public TextMeshProUGUI Fire;
-	public TextMeshProUGUI Wind;
+	public TMP_InputField Unitname;
+	public TMP_InputField job;
+	public TMP_InputField hp;
+	public TMP_InputField PAttack;
+	public TMP_InputField MAttack;
+	public TMP_InputField PDef;
+	public TMP_InputField MDef;
+	public TMP_InputField Agi;
+	public TMP_InputField Mov;
+	public TMP_InputField Luk;
+	public TMP_InputField Lightning;
+	public TMP_InputField Ice;
+	public TMP_InputField Fire;
+	public TMP_InputField Wind;
 	public TMP_InputField Level;
 	public TMP_Dropdown dd;
 	public GameObject Player_Unit;
@@ -43,7 +43,7 @@ public class SetUpUI : MonoBehaviour
 		if (au == null)
 		{
 			return;
-			Debug.Log("錯誤");
+			//Debug.Log("錯誤");
 		}
 		Player_Unit = Ui.GetChild(au, 1);
 		Enemy_Unit = Ui.GetChild(au, 2);
@@ -53,26 +53,27 @@ public class SetUpUI : MonoBehaviour
 		if (suu == null)
 		{
 			return;
-			Debug.Log("錯誤");
+			//Debug.Log("錯誤");
 		}
 		//dd = GameObject.Find("sauu_faction").GetComponent<TMP_Dropdown>();
 		//Unit = GameObject.Find("sauu_Dropdown").GetComponent<TMP_Dropdown>();
-		dd = Ui.GetChild(suu,16).GetComponent<TMP_Dropdown>();
-		name = Ui.GetChild(suu, 1, 1).GetComponent<TextMeshProUGUI>();
-		job = Ui.GetChild(suu, 2, 1).GetComponent<TextMeshProUGUI>();
-		hp = Ui.GetChild(suu, 3, 2).GetComponent<TextMeshProUGUI>();
+
+		Unitname = Ui.GetChild(suu, 1, 2).GetComponent<TMP_InputField>();
+		job = Ui.GetChild(suu, 2, 2).GetComponent<TMP_InputField>();
+		hp = Ui.GetChild(suu, 3, 2).GetComponent<TMP_InputField>();
 		Level = Ui.GetChild(suu, 4, 2).GetComponent<TMP_InputField>();
-		PAttack = Ui.GetChild(suu, 5, 2).GetComponent<TextMeshProUGUI>();
-		MAttack = Ui.GetChild(suu, 6, 2).GetComponent<TextMeshProUGUI>();
-		Agi = Ui.GetChild(suu, 7, 2).GetComponent<TextMeshProUGUI>();
-		PDef = Ui.GetChild(suu, 8, 2).GetComponent<TextMeshProUGUI>();
-		MDef = Ui.GetChild(suu, 9, 2).GetComponent<TextMeshProUGUI>();
-		Luk = Ui.GetChild(suu, 10, 2).GetComponent<TextMeshProUGUI>();
-		Lightning = Ui.GetChild(suu, 11, 2).GetComponent<TextMeshProUGUI>();
-		Ice = Ui.GetChild(suu, 12, 2).GetComponent<TextMeshProUGUI>();
-		Fire = Ui.GetChild(suu, 13, 2).GetComponent<TextMeshProUGUI>();
-		Wind = Ui.GetChild(suu, 14, 2).GetComponent<TextMeshProUGUI>();
-		Mov = Ui.GetChild(suu, 15, 1).GetComponent<TextMeshProUGUI>();
+		PAttack = Ui.GetChild(suu, 5, 2).GetComponent<TMP_InputField>();
+		MAttack = Ui.GetChild(suu, 6, 2).GetComponent<TMP_InputField>();
+		Agi = Ui.GetChild(suu, 7, 2).GetComponent<TMP_InputField>();
+		PDef = Ui.GetChild(suu, 8, 2).GetComponent<TMP_InputField>();
+		MDef = Ui.GetChild(suu, 9, 2).GetComponent<TMP_InputField>();
+		Luk = Ui.GetChild(suu, 10, 2).GetComponent<TMP_InputField>();
+		Lightning = Ui.GetChild(suu, 11, 2).GetComponent<TMP_InputField>();
+		Ice = Ui.GetChild(suu, 12, 2).GetComponent<TMP_InputField>();
+		Fire = Ui.GetChild(suu, 13, 2).GetComponent<TMP_InputField>();
+		Wind = Ui.GetChild(suu, 14, 2).GetComponent<TMP_InputField>();
+		Mov = Ui.GetChild(suu, 15, 2).GetComponent<TMP_InputField>();
+		dd = Ui.GetChild(suu, 16).GetComponent<TMP_Dropdown>();
 		Level.onEndEdit.AddListener(OnLevelEndEdit);
 		//HandleUnitValueChanged(Unit.value); 
 	}
@@ -109,7 +110,7 @@ public class SetUpUI : MonoBehaviour
 		}
 
 		// 更新 UI 文本
-		name.text = selectedUnitData.name;
+		Unitname.text = selectedUnitData.name;
 		job.text = selectedUnitData.job.ToString();
 		hp.text = (selectedUnitData.Hp + Value[0]).ToString();
 		PAttack.text = (selectedUnitData.PAttack + Value[1]).ToString();
