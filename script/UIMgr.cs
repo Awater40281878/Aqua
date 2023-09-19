@@ -26,9 +26,9 @@ public class UIMgr : MonoBehaviour
 	{
 		GameObject.Find("EditUI").SetActive(false);
 		Click_Mode(2);
-		GameObject lui = GetChild(GameObject.Find("battleUI"), 1);
+		GameObject lui = GetChild(GameObject.Find("BattleUI"), 1);
 		lui.SetActive(true);
-		GameObject ld = GetChild(GameObject.Find("battleUI"), 1, 2);
+		GameObject ld = GetChild(GameObject.Find("BattleUI"), 1, 2);
 		TMP_Dropdown td = ld.GetComponent<TMP_Dropdown>();
 
 		// 先清空選項列表
@@ -502,7 +502,7 @@ public class UIMgr : MonoBehaviour
 				}
 			}
 
-			Debug.Log("Map unit data loaded from file: " + filePath);
+			//Debug.Log("Map unit data loaded from file: " + filePath);
 		}
 		else
 		{
@@ -637,7 +637,7 @@ public class UIMgr : MonoBehaviour
 		//先讀取已配置的屬性
 		Map_Unit_Mgr mum = Map_Unit_Mgr.instance;
 		SetUpUI suu = SetUpUI.instance;
-		string name = suu.name.text;
+		string name = suu.Unitname.text;
 		int hp = Int32.Parse(suu.hp.text);
 		Job_Type job = Job_Type.Null;
 		switch (suu.job.text)
@@ -691,7 +691,6 @@ public class UIMgr : MonoBehaviour
 		int Level = Int32.Parse(suu.Level.text);
 		int faction = suu.dd.value + 1;
 		//當我按下 放置按鈕
-		print(job);
 		//會將 單位白模 放置在游標的位置
 		Vector3 cursorLoc = cursor_move.instance.gameObject.transform.position;
 		GameObject ut = Instantiate(Unit_template, cursorLoc, Unit_template.transform.rotation);
@@ -709,7 +708,6 @@ public class UIMgr : MonoBehaviour
 			
 			case 1:
 				ut.transform.parent = suu.Enemy_Unit.transform;
-				print(mum.Enemy_Unit);
 				mum.Enemy_Unit.Add(new Unit_map_Date(cursorLoc, new Unit_Data(name, Level, job, hp, PAttack,
 					MAttack, PDef, MDef, Agi, Mov, Luk, Lightning, Ice, Fire, Wind)));
 				break;
@@ -906,7 +904,7 @@ public class UIMgr : MonoBehaviour
 			SpriteRenderer jobbg = ut.transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>();
 			SpriteRenderer jobimg = ut.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<SpriteRenderer>();
 			ImgMgr im = ImgMgr.instance;
-			ut.transform.parent = suu.Enemy_Unit.transform;
+			ut.transform.parent = suu.Player_Unit.transform;
 
 			jobbg.color = Color.white;
 			switch (job)
@@ -921,7 +919,6 @@ public class UIMgr : MonoBehaviour
 					break;
 			}
 		}
-
 	}
 	public void SetTempUnit(int level)
 	{
@@ -1051,7 +1048,6 @@ public class UIMgr : MonoBehaviour
 				umd.CanMoveCont = 1;
 				umd.MoveStep= 0;
 				umd.MoveCont = 0;
-				//print(umd.CanMoveCont);
 				string name = ud.name;
 				Job_Type job = ud.job;
 				//在座標上生成單位 模板
