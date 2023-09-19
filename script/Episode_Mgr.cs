@@ -22,11 +22,11 @@ public class Episode_Mgr : MonoBehaviour
     public void StartBattle()
     {
         UIMgr Ui = UIMgr.instance;
-        GameObject lui = Ui.GetChild(GameObject.Find("battleUI"), 1);
+        GameObject lui = Ui.GetChild(GameObject.Find("BattleUI"), 1);
         lui.SetActive(false);
         Battle();
-
-    }
+        battleRound.instance.SetPhase(1);
+	}
 
 
     private void Battle()
@@ -45,7 +45,7 @@ public class Episode_Mgr : MonoBehaviour
 
         }
         UIMgr Ui = UIMgr.instance;
-        GameObject ld = Ui.GetChild(GameObject.Find("battleUI"), 1, 2);
+        GameObject ld = Ui.GetChild(GameObject.Find("BattleUI"), 1, 2);
         TMP_Dropdown td = ld.GetComponent<TMP_Dropdown>();
         int level = td.value;
         Episode thisEp = All_Episode[level];
@@ -58,7 +58,8 @@ public class Episode_Mgr : MonoBehaviour
         thismap.transform.localScale = Vector3.one;
         um.load_node(thisEp.mapNode);
         um.load_map_unit(thisEp.Unitdate);
-    }
+		generator.instance.DestroyNode();
+	}
     public void DestroyAllChild(GameObject father)
     {
         // 確認有指定父物件
