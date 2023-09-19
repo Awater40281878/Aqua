@@ -6,14 +6,12 @@ public enum behaviorMod
     NotActed,
     Acted,
     Idle,
-    OnAttack,
     OnMove,
     OnMoveing_first,
     OnMoveing_second,
-    OnHealing,
     OnDiscussion,
     OnUesitem,
-    choiceAttack_mode,
+    choiceSkills_mode,
 
 
 }
