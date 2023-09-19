@@ -12,15 +12,23 @@ public class ImgMgr : MonoBehaviour
         }
     }
     [System.Serializable]
-    public class SpriteGroup
+    public class SpriteGroup1
     {
-        
+
         public Sprite jobBg;
         public Sprite Sword;
         public Sprite Shield;
         public Sprite Bow;
-		public Sprite Magic;
+        public Sprite Magic;
     }
+	[System.Serializable]
+	public class SpriteGroup2
+	{
+
+		public Sprite PlayerTurn;
+		public Sprite EnemyTurn;
+	}
 	[SerializeField]
-    public SpriteGroup job_img;
+    public SpriteGroup2 BattleUIanime;
+	public SpriteGroup1 job_img;
 }
