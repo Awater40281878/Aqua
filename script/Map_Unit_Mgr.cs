@@ -25,14 +25,22 @@ public class Map_Unit_Mgr : MonoBehaviour
     /// 以放置的 友方 單位
     /// </summary>
     public List<Unit_map_Date> Ally_Unit = new List<Unit_map_Date>();
-    
+
     public List<Unit_map_Date> Player_Unit = new List<Unit_map_Date>(4)
     {
         new Unit_map_Date(new Vector3(0,0,0),new Unit_Data("Saber",1,Job_Type.Saber,21,8,6,4,4,6,5,11,0,0,0,0)),
         new Unit_map_Date(new Vector3(0,0,0),new Unit_Data("Tank",1,Job_Type.Tank,26,9,2,6,3,4,3,9,0,0,0,0)),
         new Unit_map_Date(new Vector3(0,0,0),new Unit_Data("Witch",1,Job_Type.Witch,21,3,9,2,3,4,3,9,10,10,0,0)),
     };
-    public GameObject GetMgr()
+    private void Setorder()
+    {
+        Player_Unit[0].date.order = 1;
+        Player_Unit[1].date.order = 2;
+        Player_Unit[2].date.order = 3;
+
+	}
+
+	public GameObject GetMgr()
 	{
         return this.gameObject;
 	}
