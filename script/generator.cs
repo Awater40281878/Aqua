@@ -63,6 +63,7 @@ public class generator : MonoBehaviour
 	{
 		AStarNode[,] nodemap = ASTarMgr.instance.nodes;
 		DestroyNode();
+		//print(nodemap.GetLength(0));
 		for (int i = 0; i < nodemap.GetLength(0); i++)
 		{
 			for (int j = 0; j < nodemap.GetLength(1); j++)
@@ -95,12 +96,10 @@ public class generator : MonoBehaviour
 		DestroyNode();
 		//移動力
 		int mov = Unitdate.date.Mov;
-		//print(mov);
 		//玩家位置
 		Vector2 Loc = new Vector2(Unitdate.loc.x/10, Unitdate.loc.z/10);
 		//找出可以移動得格子
 		Range = ASTarMgr.instance.FindMoveRange(Loc, nodemap,mov);
-		//print(Range.Count);
 		foreach (var node in Range)
 		{
 			GameObject cube = Instantiate(PNode, new Vector3((begiX + node.x) * offsetX, (node.z - 1) * 4, (begiY + node.y) * offsetY), PNode.transform.rotation);
@@ -113,7 +112,7 @@ public class generator : MonoBehaviour
 			}
 		}
 	}
-	void DestroyNode()
+	public void DestroyNode()
 	{
 		if (nodeGrp.transform.childCount != 0)
 		{
