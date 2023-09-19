@@ -38,7 +38,7 @@ public class drawing_tool : MonoBehaviour
             SetUp = GetChild(sm, 1).GetComponent<Image>();
         }
 
-        GameObject du = GameObject.Find("drawUIsss");
+        GameObject du = GameObject.Find("drawUI");
 		if (du!=null)
 		{
             Walkable = GetChild(du, 1, 2, 1).GetComponent<Image>();
