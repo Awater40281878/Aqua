@@ -169,7 +169,7 @@ public class UIMgr : MonoBehaviour
 				}
 			}
 
-			generator.instance.generate_node_game();
+			generator.instance.generate_node_game(ASTarMgr.instance.nodes);
 			//Debug.Log("Nodes loaded from file: " + filePath);
 		}
 		else
@@ -230,7 +230,7 @@ public class UIMgr : MonoBehaviour
 			}
 		}
 
-		generator.instance.generate_node_game();
+		generator.instance.generate_node_game(ASTarMgr.instance.nodes);
 		//Debug.Log("Nodes loaded from file.");
 	}
 
@@ -327,8 +327,8 @@ public class UIMgr : MonoBehaviour
 
 
 
-		string name = GetChild(CU, 1, 1).GetComponent<TMP_InputField>().text;
-		TMP_Dropdown dropdown = GetChild(CU, 2, 1).GetComponent<TMP_Dropdown>();
+		string name = GetChild(CU, 1, 2).GetComponent<TMP_InputField>().text;
+		TMP_Dropdown dropdown = GetChild(CU, 2, 2).GetComponent<TMP_Dropdown>();
 		string jobString = dropdown.options[dropdown.value].text;
 		Job_Type job = Job_Type.Null;
 		if (Enum.IsDefined(typeof(Job_Type), jobString))
@@ -356,7 +356,7 @@ public class UIMgr : MonoBehaviour
 		}
 		AI_Unit_Manage.instance.Data.Add(new Unit_Data(name, 1, job, hp, PAttack, MAttack, PDef, MDef, Agi, Mov, Luk, Lightning, Ice, Fire, Wind));
 		save_Unit();
-
+		UIMgr.instance.item_list_update();
 	}
 	public void Remove_unit()
 	{
@@ -376,6 +376,7 @@ public class UIMgr : MonoBehaviour
 			}
 
 		}
+		UIMgr.instance.item_list_update();
 	}
 	public void save_map_unit()
 	{
@@ -681,7 +682,7 @@ public class UIMgr : MonoBehaviour
 		int Mov = Int32.Parse(suu.Mov.text);
 		int Luk = Int32.Parse(suu.Luk.text);
 		int Lightning = Int32.Parse(suu.Lightning.text);
-		int Ice = Int32.Parse(suu.Ice.text);
+		int Ice = Int32.Parse(suu.Ice.text);	
 		int Fire = Int32.Parse(suu.Fire.text);
 		int Wind = Int32.Parse(suu.Wind.text);
 		//int Lightning ;
