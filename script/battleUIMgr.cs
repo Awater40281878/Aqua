@@ -148,7 +148,6 @@ public class battleUIMgr : MonoBehaviour
 				break;
 			case behaviorMod.OnMoveing_first:
 				generator.instance.DestroyNode();
-				Routing_Protocol.instance.Resetprotocol();
 				P_behavior = behaviorMod.Acted;
 				break;
 			case behaviorMod.OnMoveing_second:
@@ -202,7 +201,6 @@ public class battleUIMgr : MonoBehaviour
 		sortBattleUi(original_Date);
 		P_behavior = behaviorMod.NotActed;
 		last_behavior = behaviorMod.NotActed;
-		Routing_Protocol.instance.Resetprotocol();
 		if (battleRound.instance.ClickIdle(1))
 		{
 			//print("Allidle");
@@ -287,7 +285,7 @@ public class battleUIMgr : MonoBehaviour
 			rt.anchoredPosition = hide_Loc;
 		}
 	}
-	private void Write_UnitData(Unit_map_Date Date)
+	public void Write_UnitData(Unit_map_Date Date)
 	{
 		List<Unit_map_Date> Unitlist = Map_Unit_Mgr.instance.Player_Unit;
 		Unit_map_Date temp_date = new Unit_map_Date(Vector3.zero, new Unit_Data("", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
