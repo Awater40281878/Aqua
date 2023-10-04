@@ -5,6 +5,7 @@ using System.Xml.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class battleRound : MonoBehaviour
 {	
@@ -51,14 +52,33 @@ public class battleRound : MonoBehaviour
 		if (Count >= EY.transform.childCount)
 		{
 			Count = 0;
+			SetPhase(1);
 			return;
 		}
-		//print(EY.transform.GetChild(Count).gameObject.name);
-		Routing_Protocol.instance.FindProtocol_EY(EY.transform.GetChild(Count).gameObject);
+		Unit_map_Date targetDate = null;
+		foreach (var item in Map_Unit_Mgr.instance.Enemy_Unit)
+		{
+			if (item.date.name == EY.transform.GetChild(Count).gameObject.name)
+			{
+				targetDate = item;
+			}
+		}
+		if (targetDate==null)
+		{
+			print("§ä¤£¨ì");
+		}
+		Routing_Protocol.instance.FindProtocol_EY(EY.transform.GetChild(Count).gameObject, targetDate.date.Mov);
 		Count++;
 	}
 	private void PYPhase()
 	{
+		foreach (var item in Map_Unit_Mgr.instance.Player_Unit)
+		{
+			item.CanMoveCont = 1;
+			item.MoveCont = 0;
+			item.MoveStep = 0;
+			item.Idle = false;
+		}
 		Image img = GameObject.Find("UIanime").transform.GetChild(0).GetComponent<Image>();
 		img.sprite = ImgMgr.instance.BattleUIanime.PlayerTurn;
 		myani.instance.Start_Battle();
@@ -89,7 +109,7 @@ public class battleRound : MonoBehaviour
 			}
 			else
 			{
-				AllIdle = false;
+				return false;
 			}
 		}
 		return AllIdle;
