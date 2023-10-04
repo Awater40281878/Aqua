@@ -59,9 +59,11 @@ public class generator : MonoBehaviour
 		}
 
 	}
-	public void generate_node_game()
+	public void generate_node_game(AStarNode[,] nodes)
 	{
-		AStarNode[,] nodemap = ASTarMgr.instance.nodes;
+
+		AStarNode[,] nodemap = nodes;
+		
 		DestroyNode();
 		//print(nodemap.GetLength(0));
 		for (int i = 0; i < nodemap.GetLength(0); i++)
