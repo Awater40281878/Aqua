@@ -28,7 +28,8 @@ public class Change_Scene : MonoBehaviour
 	/// </summary>
 	public bool[] mode = new bool[3];
 	private void Start()
-	{
+	{	
+		
 		generatorUI = GameObject.Find("generatorUI");
 		drawUI = GameObject.Find("drawUI");
 		CreateUnitUI = GameObject.Find("CreateUI");
