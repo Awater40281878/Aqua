@@ -101,7 +101,7 @@ public class cursor_move : MonoBehaviour
 		float startTime = Time.time;
 		Vector3 startPosition = transform.position;
 		Vector3 targetPosition = targetLoc + hight;
-
+		myani.instance.Stop_CursorFloat();
 		while (transform.position != targetPosition)
 		{
 			if (Vector2.Distance(new Vector2(startPosition.x, startPosition.z), new Vector2(transform.position.x, transform.position.z)) > 5f)
@@ -253,6 +253,7 @@ public class cursor_move : MonoBehaviour
 	}
 	public void GetNodeInfo(AStarNode node)
 	{
+		
 
 		UIMgr ui = UIMgr.instance;
 		//print(ui.mode[0]);
@@ -272,6 +273,7 @@ public class cursor_move : MonoBehaviour
 			GameObject Etarget = findUnitOnCursor(GameObject.Find("Enemy_Unit"));
 			if (Ptarget != null)
 			{
+				myani.instance.Start_CursorFloat();
 				//print(1);
 				battleUIMgr bui = battleUIMgr.instance;
 				if (battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_first && battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_second)
@@ -282,14 +284,16 @@ public class cursor_move : MonoBehaviour
 			}
 			if (Atarget != null)
 			{
+				myani.instance.Start_CursorFloat();
 				Debug.Log("找到友方");
 			}
 			if (Etarget != null)
 			{
-				Debug.Log("找到敵方");
+				myani.instance.Start_CursorFloat();
 			}
 			if (Ptarget == null && Atarget == null && Etarget == null)
 			{
+				
 				battleUIMgr bui = battleUIMgr.instance;
 				if (battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_first && battleUIMgr.instance.P_behavior != behaviorMod.OnMoveing_second)
 				{
