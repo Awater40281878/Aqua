@@ -75,7 +75,7 @@ public class drawing_tool : MonoBehaviour
                 change_draw_mode("E");
                 Debug.Log("E key pressed!");
             }
-            if (IsButtonPressed(KeyCode.Space))
+            if (IsButtonPressed(KeyCode.F))
             {
                 switch (Change_Scene.instance.GetMode())
                 {
