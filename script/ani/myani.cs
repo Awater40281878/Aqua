@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class myani : MonoBehaviour
 {
-    public static myani instance;
+	public static myani instance;
+	private Coroutine cursorFloatCoroutine;
 	private void Awake()
 	{
 		if (instance == null)
@@ -16,13 +17,13 @@ public class myani : MonoBehaviour
 		}
 	}
 	public void Start_Battle()
-	{	
+	{
 		GameObject animeUI = UIMgr.instance.GetChild(GameObject.Find("UIanime"), 1);
 		animeUI.SetActive(true);
-		StartCoroutine(Start_Battle_ani(4f));
-    }
+		StartCoroutine(Start_BattleAni(4f));
+	}
 	//開始戰鬥動畫
-	IEnumerator Start_Battle_ani(float costTime)
+	IEnumerator Start_BattleAni(float costTime)
 	{
 		Image img = GameObject.Find("UIanime").transform.GetChild(0).GetComponent<Image>();
 
@@ -66,7 +67,7 @@ public class myani : MonoBehaviour
 			default:
 				break;
 		}
-		
+
 		// 確保透明度最終為0
 		Color finalColor = img.color;
 		finalColor.a = 0;
@@ -74,5 +75,50 @@ public class myani : MonoBehaviour
 		img.gameObject.SetActive(false);
 		// 在此之後你可以執行其他操作，或者在淡入淡出完成後繼續邏輯
 	}
-	
+
+
+	public void Start_CursorFloat()
+	{
+
+		cursorFloatCoroutine = StartCoroutine(Start_CursorFloatCoroutine(2f));
+
+	}
+	public void Stop_CursorFloat()
+	{
+		if (cursorFloatCoroutine != null) // 確保協程未在運行中時才啟動
+		{
+			StopCoroutine(cursorFloatCoroutine);
+		}
+	}
+	private IEnumerator Start_CursorFloatCoroutine(float loopTime)
+	{
+
+		GameObject cursorObj = GameObject.Find("cursor").transform.GetChild(0).gameObject;
+		Vector3 startPosition = cursorObj.transform.position;
+		Vector3 aniPosition = startPosition;
+		float floatHeight = 2f; // 上下浮動的高度
+		float floatSpeed = floatHeight / loopTime; // 根據 loopTime 計算浮動速度
+
+		while (true) // 使用 cursorFloatRunning 控制動畫的運行
+		{
+			float timer = 0f;
+			while (timer < loopTime)
+			{
+				float yOffset = Mathf.Sin(timer / loopTime * Mathf.PI * 2 * floatSpeed) * floatHeight;
+				Vector3 newPosition = aniPosition + Vector3.up * yOffset;
+
+				cursorObj.transform.position = newPosition;
+
+				timer += Time.deltaTime;
+				yield return null;
+			}
+
+			cursorObj.transform.position = startPosition;
+			// 在每次動畫完成後等待一段時間再進行下一次浮動
+			yield return new WaitForSeconds(0f); // 此處可以調整等待時間
+		}
+	}
+
+
+
 }
